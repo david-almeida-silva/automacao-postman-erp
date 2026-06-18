@@ -1,0 +1,185 @@
+{
+  "info": {
+    "_postman_id": "b0826506-1ca9-4861-88e6-1693a0666b6a",
+    "name": "ERP Bluesoft - Testes de Integração",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "55995934",
+    "_collection_link": "https://go.postman.co/collection/55995934-b0826506-1ca9-4861-88e6-1693a0666b6a?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "https://fakestoreapi.com/products",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Teste padrão de sucesso\r",
+              "pm.test(\"Produto criado com sucesso (Status 200 ou 201)\", function () {\r",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+              "});\r",
+              "\r",
+              "// O PULO DO GATO: Guardar o ID na memória (Variável de Ambiente)\r",
+              "pm.test(\"Capturar o ID gerado pelo ERP\", function () {\r",
+              "    // 1. Lemos a resposta JSON do servidor\r",
+              "    var resposta = pm.response.json();\r",
+              "    \r",
+              "    // 2. Extraímos o ID que o ERP gerou (ex: 21)\r",
+              "    var idGerado = resposta.id;\r",
+              "    \r",
+              "    // 3. Dizemos ao Postman: \"Guarda este ID numa variável chamada 'id_produto_salvo'\"\r",
+              "    pm.environment.set(\"id_produto_salvo\", idGerado);\r",
+              "    \r",
+              "    // Apenas para veres no terminal do Postman que funcionou:\r",
+              "    console.log(\"O ID capturado foi: \" + idGerado);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://fakestoreapi.com/products",
+          "protocol": "https",
+          "host": [
+            "fakestoreapi",
+            "com"
+          ],
+          "path": [
+            "products"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "https://fakestoreapi.com/products/9999",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"O status retornou 200 (Comportamento da FakeStoreAPI)\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"O produto não existe, então a resposta deve ser vazia ou nula\", function () {\r",
+              "    // Como a resposta pode vir totalmente vazia, pegamos ela como texto em vez de JSON\r",
+              "    var respostaTexto = pm.response.text();\r",
+              "    \r",
+              "    // Afirmamos que o texto tem que ser literalmente vazio ('') ou a palavra 'null'\r",
+              "    pm.expect(respostaTexto).to.be.oneOf(['', 'null']);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://fakestoreapi.com/products/9999",
+          "protocol": "https",
+          "host": [
+            "fakestoreapi",
+            "com"
+          ],
+          "path": [
+            "products",
+            "9999"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "[Fluxo] - Consultar Produto Criado Automaticamente",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Busca do produto dinâmico funcionou\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "    \r",
+              "    var resposta = pm.response.json();\r",
+              "    // Validamos se o ID que veio na resposta é o mesmo que estava na nossa variável\r",
+              "    pm.expect(resposta.id).to.eql(Number(pm.environment.get(\"id_produto_salvo\")));\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://fakestoreapi.com/products/{{id_produto_salvo}}",
+          "protocol": "https",
+          "host": [
+            "fakestoreapi",
+            "com"
+          ],
+          "path": [
+            "products",
+            "{{id_produto_salvo}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "[Auth] - Realizar Login",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "[Segurança] - Consultar Usuários Autenticado",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    }
+  ]
+}
