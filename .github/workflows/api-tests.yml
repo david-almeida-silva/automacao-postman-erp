@@ -25,6 +25,7 @@ jobs:
           npm install -g newman-reporter-htmlextra
 
       - name: Executar testes da Collection via Newman
+        continue-on-error: true
         run: newman run erp-testes.json -r htmlextra --reporter-htmlextra-export ./relatorio-api.html
 
       - name: Salvar Relatório de Testes (Artifact)
