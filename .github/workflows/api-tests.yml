@@ -1,0 +1,36 @@
+name: Execução de Testes de API - ERP Varejo
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Instalar Newman e Reporter HTML
+        run: |
+          npm install -g newman
+          npm install -g newman-reporter-htmlextra
+
+      - name: Executar testes da Collection via Newman
+        
+        run: newman run erp-testes.json -r htmlextra --reporter-htmlextra-export ./relatorio-api.html
+
+      - name: Salvar Relatório de Testes (Artifact)
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: Relatorio-Testes-API
+          path: ./relatorio-api.html
