@@ -35,3 +35,10 @@ npm install -g newman newman-reporter-htmlextra
 
 # Execute a collection
 newman run erp-testes.json -r htmlextra
+```
+
+### 3. Execução Visual (Postman)
+Caso deseje visualizar as requisições graficamente:
+1. Clone este repositório.
+2. Abra o Postman e vá em **File > Import** para importar a collection.
+3. Selecione a collection e clique em **Run** para executar os cenários.
